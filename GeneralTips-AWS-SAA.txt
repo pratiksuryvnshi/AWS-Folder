@@ -1,0 +1,117 @@
+General Tips
+If the scenario is related to architecture where users from across regions will be using the application, “CloudFront Distribution” could be the answer. Take note that CloudFront distribution can be used for both uploads and downloads.
+If the question is asking for file system or file share on windows environments, or SMB protocol, “Amazon FSx” is the answer.
+If the question is about disaster recovery policy for multi-region, look for cross-region replication.
+Remember: Multi-AZ does not provide DR capabilities across regions. If you need cross-region DR capability, cross-region replication is the option.
+For HPC (high performance compute) requirements, use “Amazon FSx for Lustre”.
+For global users accessing both static and dynamic content, your answer should be CloudFront Distribution with ALB as origin.
+If the question is about accessing data via API, usually “Amazon API Gateway” is the answer. It is often asked in combination with Lambda.
+If the question mentions TCP/UDP or Layer 4, then “Network Load Balancer” is the answer.
+If you want to control the routing based on geography, use Route 53 with Geolocation policy. Usually such questions would be about scenarios where you have to serve different content to users based on their location.
+If you want to use Amazon storage on on-prem applications, use Amazon Storage Gateways.
+To use Amazon S3 in on-prem systems over NFS or SMB, use Amazon File Gateway.
+To use Amazon FSx for Windows File Server file shares from your on-premises facility, use Amazon FSx File Gateway.
+If the storage scenario is about atomicity, consistency, isolation, and durability (ACID), choose Amazon EFS.
+If you want to give access to some file for limited time, use pre-signed URLs. It comes with expiry.
+Use consolidated billing across multiple AWS accounts (usually by department) for savings and discounts on the total bills.
+If the question is asking about something similar to NFS but on the AWS side, EFS is the answer.
+If the question is asking about some form of audit for tracing purposes, AWS CloudTrail is the answer. It can be used to track data event logs for S3 buckets.
+Repeat: If the scenario is about global users and you need better performance, choose CloudFront Distribution.
+Tips related to S3
+If the question refers to static content hosting or static error page, consider S3 as a potential answer.
+To prevent accidental deletes on S3, use MFA or versioning.
+Successful write to S3 is indicated by return code HTTP 200
+You can only create 100 S3 buckets by default.
+Buckets are specific to the region, keep them closer to the client.
+“S3 Select” can be used to get a subset of S3 data by SELECT queries. It also gives better performance.
+S3: The single-part file upload limit is 5GB.
+The maximum size of file that can be uploaded to S3 is 5TB.
+For files/objects bigger than 100MB, use the multipart upload feature for better performance. [Multi-part is mandatory for files bigger than 5GB]
+For better performance in downloads, use the “S3 Byte-range Function”.
+If the question is asking to speed up data uploads, select “Transfer Acceleration”.
+If the question is asking about service to host static data/website, S3 is the answer.
+If the scenario is about torrents, S3 is the answer.
+If the question asks about recommendations for these use cases, S3 is the preferred choice: Storage for Backups, Static Website, Hosting Media, Software Delivery
+Using more prefixes gives you better performance for each prefix. Spreading data into more prefixes increased the overall performance by the factor of a number of prefixes. Each prefix gives 3500 writes and 5500 read requests per second. [Question may present scenarios related to these numbers]
+“Cross-Region Replication” requires versioning on both source and destination S3 buckets. When cross-region replication is turned on, only the new changes are replicated and not the existing objects. Note that delete markers are not replicated.
+If the question asks about a solution that can provide infinite scalability, high availability, and cost-effective storage, S3 could be the answer. If the options include RDS, DynamoDB, EBS Volume, EFS, etc. then pay attention to the actual data scenario.
+If you want to prevent “accidental” deletes of S3 objects, use MFA (Multi-factor authentication).
+Access to S3 buckets can be controlled by (i) IAM Policies, (ii) Bucket Policies, (iii) Access Control Lists, and (iv) Signed URL or Query String Authentication.
+If the question is about proving access for a limited time (e.g. hour), the answer could be pre-signed URLs.
+By default, all S3 buckets are blocked for public access.
+Use “S3 Object Lock” to prevent deletes or updates to an object. It uses WORM (write-once-read-many) method. These requirements could also be regulatory, something to look for in the question.
+Use the “S3 Governance Mode” lock to prevent users from overwriting/deleting/changing the lock for objects. Users with “special permissions” can only do these operations.
+“S3 Compliance Mode” makes it impossible to change retention and lock properties. Even the administrator cannot change them. This lock is effective till the retention period.
+“S3 Legal Hold” is similar to compliance mode but without the limitations of the retention period. The object can only be deleted or overwritten if the object is put out of legal hold mode.
+“S3 Glacier Vault Lock” can be used to enforce compliance controls using vault lock policy.
+S3 buckets can be shared across AWS accounts in three ways: (i) Bucket policies & IAM roles, (ii) Bucket ACLs and IAM roles, and (iii) Cross-account IAM roles.
+Tips related to S3 Storage Classes
+From an exam point of the view, the only difference between all storage classes is the cost and data retrieval SLA.
+Cost (High to Low): S3 Standard → S3 Intelligent Tiering → S3 Standard IA → S3 One Zone IA → S3 Glacier → S3 Glacier Deep Archive
+If the scenario in question is about archival data and asking for recommendations to save cost, S3 Glacier is the answer. There are two types of glaciers: S3 Glacier (data retrieval SLA of 4 hours) and S3 Glacier Deep Archive (data retrieval SLA of 12 hours but cheapest).
+If the question talks about not-so-frequent data access, S2 Standard IA could be the answer. IA stands for Infrequent Access.
+If you have to choose between S3 Standard, S3 Intelligent Tiering, Standard IA, One Zone IA
+Select S3 One Zone IA if the question is asking about no resiliency or no DR requirements and save cost.
+Select S3 IA if the question is asking about cost savings but infrequent data access.
+Select S3 Intelligent Tiering if the question is asking about machine learning or an algorithm that can automatically move data between S3 Standard and S3 IA to save costs.
+Select S3 Standard if the data is frequently accessed and is hot data (not archive)
+EC2 Instances
+If the question refers to EC2 instances for high performance with low network latency, cluster placement is the answer.
+If the question is about a scenario where the workload will be high at predictable time period (weekend, month end, business day start and end time etc.), and the question is about scaling the application, select EC2 AutoScaling with scheduled scaling policy.
+If the scenario is about multiple EC2 instances working on same storage device, then Amazon EFS is the answer.
+Remember: EBS can only be used by one EC2 instance at a time.
+Remember: EFS can be used by multiple EC2 instances at a time. EFS can be mounted on multiple instances.
+If the scenario is about fixed number of instances for fixed amount of time, “Reserved Instances” is the answer.
+If the question states requirements of reloading/preserving the memory content of EC2 instances, use EC2 Hibernation.
+Stopping and starting an EC2 instance will change its public IP address but same private IP address.
+If the question states that the workload can handle failures, usually Spot Instances is the answer.
+Spot Fleet means maintaining desired number of spot instances.
+Microservices & Serverless Architectures:
+Lambda is the serverless option for compute requirements.
+Lambda cannot run for more than 15 mins
+If you want different microservices to work together, use Amazon SQS for messaging.
+If you have more than one consumer of messages, Amazon SNS is the answer.
+Remember: Amazon Lambda can scale just fine with varied workloads. So if the question is about unpredictable workloads, Lambda could be the answer.
+If you are not sure of the answer, give preference to Lambda, S3, DynamoDB. Always.
+In case of multi-step application design, you can use lambda for each step and using SQL in between for messaging. If you have multiple downstream steps, then use one SNS followed by multiple SQS (one for each step). For such questions, always pay attention to “order” requirements. For ordered processing, SQS FIFO should be used.
+Some scenarios where AWS SQS is a good option are (i) Decoupling applications asynchronously, (ii) Buffering the write operations to databases, like a voting application, (iii) Order processing, (iv) Image Processing, (iv) Automatic scaling of queues based on workload, (v) Offloading requests
+Scenarios where AWS Kinesis Data Streams is a good option are (i) processing log data, (ii) processing events or clickstream data, (iii) real-time data, (iv) gaming data feed, (iv) data from IoT devices etc.
+Messages in Kinesis Data Stream can be read multiple times whereas messages can only be read once in SQS.
+Messages in Kinesis Data Stream are ordered whereas messages are unordered in SQS. (Take note that SQS FIFO maintains order as well)
+Data Migration
+If the question is about moving one time huge data (must be in TBs), snow devices should be the answer.
+For 50TB data migration from on-prem to AWS, AWS Snowball should be used.
+AWS Snowcones are useful for small data sizes (6TB per device)
+Data Streams & Message Queues
+If the streaming data is required as “near-real-time”, Amazon Kinesis Firehose is a good option. (Near-real-time is the keyword to watch out for Firehose)
+For real-time streaming, Kinesis Data streams can be used.
+If the question is about performing analytics on real-time data, use Kinesis Data Analytics. There could be another hint of using SQL for data analysis, that again implies Kinesis Data Analytics.
+If the question talks about real-time data and the requirement is that the data should be processed in order, you can use Kinesis Data Streams or Amazon SQS FIFO. If the question has both in the options, watch out for keywords in last line of the question. Usually, the question will ask about MOST efficient. For such cases, choose Kinesis over SQS.
+For cases where the question is asking about preventing duplicate processing of messages in SQS, the answer should be “increasing the visibility timeout”.
+All About Databases
+If the scenario is about read queries adding workload to the database system (RDS or Aurora or anything else), the answer is Read Replicas.
+Questions related to performance issues related to ad-hoc reporting or monthly reporting, can be solved by read replicas.
+If the question is about performance issues caused by reports, but if the reports are real-time, the answer is read-replicas for Amazon Aurora database. Only Aurora replicas are synchronous, and others are asynchronous.
+If the scenario is about data store or data base for key-value pairs, DynamoDB is the answer.
+If the requirement is to have a database that can serve multiple “regions”, use Aurora Global Tables or DynamoDB Global tables. Take note that you can always create read replicas to take read workload off from main database.
+If the question is about improving performance of the database, “ElastiCache for Redis” could be the answer. ElastiCache is the in-memory storage that can cache frequently accessed data for faster retrieval.
+If the question is about joining tables and performing complex queries, DynamoDB can never be the answer. For such cases, choose Amazon RDS or Aurora or Redshift (recommended for analytics).
+Amazon Redshift is the default choice for Data Warehousing or OLAP workloads.
+Security & Firewalls
+If you want to block certain country from accessing the application, use Amazon CloudFront to deny access by country names.
+If you don’t want to access Amazon S3 or Amazon Redshift via public internet, use Gateway Endpoints. Take note that you will need to add an entry in the route table as well for this gateway endpoint.
+If you want to encrypt an existing database, you need to take the snapshot of it, encrypt the snapshot and restore the database from the encrypted snapshot. This is a common practice in AWS.
+To secure root user access, choose MFA and strong password. (very common question)
+If you want to block an IP address, use AWS WAF.
+If you want to block a suspicious IP address, you can also add a deny rule in the inbound table of the network ACL.
+For cross-site scripting (XSS) attacks, use AWS WAF.
+You can only add ALLOW rules in Security Groups.
+Security Groups are stateful whereas network ACLs are not.
+For automatic rotation of keys, use AWS KMS-Managed Keys.
+If the scenario is about providing access to other AWS accounts, use Cross Account permissions.
+To prevent against malicious internet activity and attacks, and from protection against new common vulnerabilities and exposures, use AWS WAF.
+Choose AWS Secrets Manager if the question is about storing credential securely. On top of storage, it always provide ways to automatically rotate the passwords.
+Networking
+If the question requires higher network performance, use “Enhanced Networking”.
+For HPC requirements, use Elastic Fabric Adapter (EFA) should be used.
+Choose “VPC endpoint for DynamoDB” if you want access to DynamoDB without using public internet.
